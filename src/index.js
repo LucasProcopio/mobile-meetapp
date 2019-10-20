@@ -1,10 +1,10 @@
 import React from 'react';
 import { StatusBar } from 'react-native';
 
-import Background from './components/Background';
+import './config/ReactotronConfig';
 
+import Background from './components/Background';
 import App from './App';
-// import { Container } from './styles';
 
 export default function Index() {
   return (
