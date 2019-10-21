@@ -1,6 +1,9 @@
 import React, { useState, useRef } from 'react';
+import { useDispatch } from 'react-redux';
+import PropTypes from 'prop-types';
 import { Image } from 'react-native';
 
+import { signInRequest } from '~/store/modules/auth/actions';
 import logo from '~/assets/logo.png';
 import {
   Container,
@@ -16,7 +19,11 @@ export default function SignIn({ navigation }) {
   const [password, setPassword] = useState('');
   const passwordRef = useRef();
 
-  function handleSubmit() {}
+  const dispatch = useDispatch();
+
+  function handleSubmit() {
+    dispatch(signInRequest(email, password));
+  }
 
   return (
     <Container>
@@ -55,3 +62,9 @@ export default function SignIn({ navigation }) {
     </Container>
   );
 }
+
+SignIn.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+  }).isRequired,
+};
