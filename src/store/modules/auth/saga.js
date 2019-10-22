@@ -25,11 +25,12 @@ export function* signIn({ payload }) {
 
     yield put(signInSuccess(token, user));
     // history.push('/dashboard');
+    Alert.alert('👏 Success', '');
   } catch (e) {
     yield put(signFailure());
 
     const message = e.response
-      ? `💩 ${e.response.data.error} 💩`
+      ? `❌ ${e.response.data.error} ❌`
       : '💩 An internal error ocurred while trying to login, please try again later 💩';
 
     Alert.alert('Authentication failed', message);
@@ -45,9 +46,13 @@ export function* signUp({ payload }) {
       password,
     });
     // history.push('/');
+    Alert.alert(
+      '👏 Success',
+      `✅ ${name} your account was successfully created`
+    );
   } catch (e) {
     const message = e.response
-      ? `💩 ${e.response.data.error} 💩`
+      ? `❌ ${e.response.data.error} ❌`
       : '💩 An internal error ocurred while trying to subscribe, please try again later 💩';
 
     Alert.alert('Subscription error', message);
