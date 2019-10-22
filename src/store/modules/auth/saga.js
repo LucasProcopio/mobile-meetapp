@@ -8,7 +8,7 @@ export function* signIn({ payload }) {
   try {
     const { email, password } = payload;
 
-    const response = yield call(api.post, 'sessions', {
+    const response = yield call(api.post, 'session', {
       email,
       password,
     });
@@ -16,7 +16,7 @@ export function* signIn({ payload }) {
     const { token, user } = response.data;
 
     if (user.provider) {
-      Alert.alert('Login error', 'User cannot be a provider');
+      Alert.alert('Login error', '💩 User cannot be a provider 💩');
       return;
     }
 
@@ -25,12 +25,14 @@ export function* signIn({ payload }) {
 
     yield put(signInSuccess(token, user));
     // history.push('/dashboard');
-  } catch (error) {
+  } catch (e) {
     yield put(signFailure());
-    Alert.alert(
-      'Authentication failed',
-      'E-mail or password incorrect! please try again'
-    );
+
+    const message = e.response
+      ? `💩 ${e.response.data.error} 💩`
+      : '💩 An internal error ocurred while trying to login, please try again later 💩';
+
+    Alert.alert('Authentication failed', message);
   }
 }
 
@@ -43,11 +45,13 @@ export function* signUp({ payload }) {
       password,
     });
     // history.push('/');
-  } catch (err) {
-    Alert.alert(
-      'Subscription error',
-      'Error while trying to subscribe, make sure you enter your data correctly'
-    );
+  } catch (e) {
+    const message = e.response
+      ? `💩 ${e.response.data.error} 💩`
+      : '💩 An internal error ocurred while trying to subscribe, please try again later 💩';
+
+    Alert.alert('Subscription error', message);
+
     yield put(signFailure());
   }
 }
