@@ -1,57 +1,81 @@
-import React from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+
+import { subDays, format, addDays } from 'date-fns';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
+import api from '~/services/api';
 import Header from '~/components/Header';
-import meetupExample from '~/assets/meetup-example.jpg';
-import {
-  Container,
-  DateText,
-  Meetup,
-  Banner,
-  MeetupContent,
-  Title,
-  InfoWrapper,
-  InfoText,
-  SubscribeButton,
-  DateWrapper,
-} from './styles';
 
-function DashboardIcon({ tintColor }) {
-  return <Icon name="event" size={20} color={tintColor} />;
-}
+import { Container, DateText, DateWrapper, MeetupList } from './styles';
+import Meetup from './Meetup';
 
 export default function Dashboard() {
+  const [date, setDate] = useState(new Date());
+  const [formattedDate, setFormatDate] = useState('');
+  const [meetups, setMeetups] = useState('');
+  const [loader, setLoader] = useState(false);
+
+  useMemo(() => {
+    function formatDate() {
+      const newDate = format(date, 'MMMM, do');
+      setFormatDate(newDate);
+    }
+
+    formatDate();
+  }, [date]);
+
+  useEffect(() => {
+    async function getMeetups() {
+      setLoader(true);
+      const response = await api.get('meetups', {
+        params: {
+          page: 1,
+          date,
+        },
+      });
+
+      console.tron.log('Meetups', response.data);
+      setLoader(false);
+      setMeetups(response.data);
+    }
+
+    getMeetups();
+  }, [date]);
+
+  function decreaseDate() {
+    setDate(subDays(date, 1));
+  }
+
+  function increseDate() {
+    setDate(addDays(date, 1));
+  }
+
   return (
     <Header>
       <Container>
         <DateWrapper>
-          <Icon name="chevron-left" size={30} color="#fff" />
-          <DateText>March 31</DateText>
-          <Icon name="chevron-right" size={30} color="#fff" />
+          <TouchableOpacity onPress={decreaseDate}>
+            <Icon name="chevron-left" size={30} color="#fff" />
+          </TouchableOpacity>
+          <DateText>{formattedDate}</DateText>
+          <TouchableOpacity onPress={increseDate}>
+            <Icon name="chevron-right" size={30} color="#fff" />
+          </TouchableOpacity>
         </DateWrapper>
-        <Meetup>
-          <Banner source={meetupExample} />
-          <MeetupContent>
-            <Title>Meet up React native</Title>
-            <InfoWrapper>
-              <Icon name="event" size={14} color="#999" />
-              <InfoText>march 12, at 20h</InfoText>
-            </InfoWrapper>
-            <InfoWrapper>
-              <Icon name="place" size={14} color="#999" />
-              <InfoText>some really cool location</InfoText>
-            </InfoWrapper>
-            <InfoWrapper>
-              <Icon name="person" size={14} color="#999" />
-              <InfoText>Organizer: Lucas Procopio</InfoText>
-            </InfoWrapper>
-            <SubscribeButton>Subscribe</SubscribeButton>
-          </MeetupContent>
-        </Meetup>
+        <MeetupList
+          data={meetups}
+          keyExtractor={item => String(item.id)}
+          renderItem={({ item }) => <Meetup data={item} />}
+        />
       </Container>
     </Header>
   );
+}
+
+function DashboardIcon({ tintColor }) {
+  return <Icon name="format-list-bulleted" size={20} color={tintColor} />;
 }
 
 Dashboard.navigationOptions = {
