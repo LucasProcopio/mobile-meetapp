@@ -5,13 +5,15 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { List, NoMeetUpText, Container } from './styles';
 import Meetup from '~/pages/Dashboard/Meetup';
 
-export default function MeetUpList({ meetups, subscribe }) {
+export default function MeetUpList({ meetups, subscribe, loadMore }) {
   if (meetups.length > 0) {
     return (
       <List
         data={meetups}
         keyExtractor={item => String(item.id)}
         renderItem={({ item }) => <Meetup data={item} subscribe={subscribe} />}
+        onEndReached={() => loadMore()}
+        onEndReachedThreshold={0.1}
       />
     );
   }
@@ -28,8 +30,9 @@ export default function MeetUpList({ meetups, subscribe }) {
 MeetUpList.propTypes = {
   meetups: PropTypes.arrayOf(
     PropTypes.shape({
-      length: PropTypes.number.isRequired,
+      length: PropTypes.number,
     }).isRequired
   ).isRequired,
   subscribe: PropTypes.func.isRequired,
+  loadMore: PropTypes.func.isRequired,
 };

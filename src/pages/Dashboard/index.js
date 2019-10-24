@@ -15,9 +15,15 @@ import { Container, DateText, DateWrapper, LoaderWrapper } from './styles';
 export default function Dashboard() {
   const [date, setDate] = useState(new Date());
   const [formattedDate, setFormatDate] = useState('');
+
   const [meetups, setMeetups] = useState([]);
+  const [page, setPage] = useState(1);
+
   const [loader, setLoader] = useState(false);
 
+  /**
+   * Format current selected date
+   */
   useMemo(() => {
     function formatDate() {
       const newDate = format(date, 'MMMM, do');
@@ -27,11 +33,13 @@ export default function Dashboard() {
     formatDate();
   }, [date]);
 
+  /**
+   * Loads list of meetups regarding to the selected date
+   */
   useEffect(() => {
     async function getMeetups() {
       try {
         setLoader(true);
-
         const response = await api.get('meetups', {
           params: {
             page: 1,
@@ -49,6 +57,8 @@ export default function Dashboard() {
         setLoader(false);
         setMeetups(meetupData);
       } catch (e) {
+        setLoader(false);
+
         const message = e.response
           ? `❌ ${e.response.data.error} ❌`
           : '💩 An internal error ocurred while trying to retrieve the meetups, please try again later 💩';
@@ -60,27 +70,87 @@ export default function Dashboard() {
     getMeetups();
   }, [date]);
 
-  function decreaseDate() {
+  /**
+   * Decrement date by one day
+   */
+  function decrementDate() {
     setDate(subDays(date, 1));
+    setPage(1);
   }
 
-  function increseDate() {
+  /**
+   * Increment date by one day
+   */
+  function incrementDate() {
     setDate(addDays(date, 1));
+    setPage(1);
   }
 
+  /**
+   * Handle user meetup subscription
+   */
   async function handleSubscription(meetupId) {
-    console.tron.log(meetupId);
+    try {
+      await api.post(`subscribe/${meetupId}`);
+
+      Alert.alert(
+        '👏 Success',
+        '✅ You have successfully subscribbed for this meetup'
+      );
+    } catch (e) {
+      const message = e.response
+        ? `❌ ${e.response.data.error} ❌`
+        : '💩 An internal error ocurred while trying to subscribe, please try again later 💩';
+
+      Alert.alert('Subscription error', message);
+    }
+  }
+
+  /**
+   * Load more meetups for the flat List
+   */
+  async function loadMore() {
+    try {
+      setPage(page + 1);
+      const nextPage = page + 1;
+
+      const response = await api.get('meetups', {
+        params: {
+          page: nextPage,
+          date,
+        },
+      });
+
+      const meetupData = response.data.map(meetup => {
+        return {
+          ...meetup,
+          formattedDate: format(parseISO(meetup.date), "MMMM, do 'at' p"),
+        };
+      });
+
+      // console.tron.log('new', meetupData);
+      // console.tron.log('old', meetups);
+      // console.tron.log('response'.response);
+
+      setMeetups([...meetups, ...meetupData]);
+    } catch (e) {
+      const message = e.response
+        ? `❌ ${e.response.data.error} ❌`
+        : '💩 An internal error ocurred while trying to load more meetups, please try again later 💩';
+
+      Alert.alert('Meetups error', message);
+    }
   }
 
   return (
     <Header>
       <Container>
         <DateWrapper>
-          <TouchableOpacity onPress={decreaseDate}>
+          <TouchableOpacity onPress={decrementDate}>
             <Icon name="chevron-left" size={30} color="#fff" />
           </TouchableOpacity>
           <DateText>{formattedDate}</DateText>
-          <TouchableOpacity onPress={increseDate}>
+          <TouchableOpacity onPress={incrementDate}>
             <Icon name="chevron-right" size={30} color="#fff" />
           </TouchableOpacity>
         </DateWrapper>
@@ -89,7 +159,11 @@ export default function Dashboard() {
             <ActivityIndicator size={60} color="#fff" />
           </LoaderWrapper>
         ) : (
-          <MeetupList meetups={meetups} subscribe={handleSubscription} />
+          <MeetupList
+            meetups={meetups}
+            subscribe={handleSubscription}
+            loadMore={loadMore}
+          />
         )}
       </Container>
     </Header>
