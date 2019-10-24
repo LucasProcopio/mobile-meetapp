@@ -1,7 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import meetupExample from '~/assets/meetup-example.jpg';
 
 import {
   MeetupWrapper,
@@ -13,26 +13,42 @@ import {
   SubscribeButton,
 } from './styles';
 
-export default function Meetup() {
+export default function Meetup({ data: meetup, subscribe }) {
   return (
     <MeetupWrapper>
-      <Banner source={meetupExample} />
+      <Banner source={{ uri: meetup.banner.url }} />
       <MeetupContent>
-        <Title>Meet up React native</Title>
+        <Title>{meetup.title}</Title>
         <InfoWrapper>
           <Icon name="event" size={14} color="#999" />
-          <InfoText>march 12, at 20h</InfoText>
+          <InfoText>{meetup.formattedDate}</InfoText>
         </InfoWrapper>
         <InfoWrapper>
           <Icon name="place" size={14} color="#999" />
-          <InfoText>some really cool location</InfoText>
+          <InfoText>{meetup.location}</InfoText>
         </InfoWrapper>
         <InfoWrapper>
           <Icon name="person" size={14} color="#999" />
-          <InfoText>Organizer: Lucas Procopio</InfoText>
+          <InfoText>Organizer: {meetup.User.name}</InfoText>
         </InfoWrapper>
-        <SubscribeButton>Subscribe</SubscribeButton>
+        <SubscribeButton onPress={() => subscribe(meetup.id)}>
+          Subscribe
+        </SubscribeButton>
       </MeetupContent>
     </MeetupWrapper>
   );
 }
+
+Meetup.propTypes = {
+  data: PropTypes.shape({
+    banner: PropTypes.shape({
+      url: PropTypes.string.isRequired,
+    }).isRequired,
+    title: PropTypes.string.isRequired,
+    location: PropTypes.string.isRequired,
+    User: PropTypes.shape({
+      name: PropTypes.string.isRequired,
+    }),
+  }).isRequired,
+  subscribe: PropTypes.func.isRequired,
+};

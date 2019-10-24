@@ -1,20 +1,21 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { Alert, ActivityIndicator } from 'react-native';
 
-import { subDays, format, addDays } from 'date-fns';
-import PropTypes from 'prop-types';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { subDays, format, addDays, parseISO } from 'date-fns';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import PropTypes from 'prop-types';
 
 import api from '~/services/api';
 import Header from '~/components/Header';
+import MeetupList from './MeetUpList';
 
-import { Container, DateText, DateWrapper, MeetupList } from './styles';
-import Meetup from './Meetup';
+import { Container, DateText, DateWrapper, LoaderWrapper } from './styles';
 
 export default function Dashboard() {
   const [date, setDate] = useState(new Date());
   const [formattedDate, setFormatDate] = useState('');
-  const [meetups, setMeetups] = useState('');
+  const [meetups, setMeetups] = useState([]);
   const [loader, setLoader] = useState(false);
 
   useMemo(() => {
@@ -28,17 +29,32 @@ export default function Dashboard() {
 
   useEffect(() => {
     async function getMeetups() {
-      setLoader(true);
-      const response = await api.get('meetups', {
-        params: {
-          page: 1,
-          date,
-        },
-      });
+      try {
+        setLoader(true);
 
-      console.tron.log('Meetups', response.data);
-      setLoader(false);
-      setMeetups(response.data);
+        const response = await api.get('meetups', {
+          params: {
+            page: 1,
+            date,
+          },
+        });
+
+        const meetupData = response.data.map(meetup => {
+          return {
+            ...meetup,
+            formattedDate: format(parseISO(meetup.date), "MMMM, do 'at' p"),
+          };
+        });
+
+        setLoader(false);
+        setMeetups(meetupData);
+      } catch (e) {
+        const message = e.response
+          ? `❌ ${e.response.data.error} ❌`
+          : '💩 An internal error ocurred while trying to retrieve the meetups, please try again later 💩';
+
+        Alert.alert('Meetup list error', message);
+      }
     }
 
     getMeetups();
@@ -50,6 +66,10 @@ export default function Dashboard() {
 
   function increseDate() {
     setDate(addDays(date, 1));
+  }
+
+  async function handleSubscription(meetupId) {
+    console.tron.log(meetupId);
   }
 
   return (
@@ -64,11 +84,13 @@ export default function Dashboard() {
             <Icon name="chevron-right" size={30} color="#fff" />
           </TouchableOpacity>
         </DateWrapper>
-        <MeetupList
-          data={meetups}
-          keyExtractor={item => String(item.id)}
-          renderItem={({ item }) => <Meetup data={item} />}
-        />
+        {loader ? (
+          <LoaderWrapper>
+            <ActivityIndicator size={60} color="#fff" />
+          </LoaderWrapper>
+        ) : (
+          <MeetupList meetups={meetups} subscribe={handleSubscription} />
+        )}
       </Container>
     </Header>
   );

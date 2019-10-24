@@ -4,9 +4,10 @@ import Button from '~/components/Button';
 
 export const MeetupWrapper = styled.View`
   background: #fff;
-  width: 335px;
+  width: 320px;
   height: 345px;
   border-radius: 4px;
+  margin: 10px 0;
 `;
 
 export const Banner = styled.ImageBackground`
