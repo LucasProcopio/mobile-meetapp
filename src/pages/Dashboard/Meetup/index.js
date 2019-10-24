@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -14,6 +14,14 @@ import {
 } from './styles';
 
 export default function Meetup({ data: meetup, subscribe }) {
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubscription() {
+    setLoading(true);
+    await subscribe(meetup.id);
+    setLoading(false);
+  }
+
   return (
     <MeetupWrapper>
       <Banner source={{ uri: meetup.banner.url }} />
@@ -31,7 +39,7 @@ export default function Meetup({ data: meetup, subscribe }) {
           <Icon name="person" size={14} color="#999" />
           <InfoText>Organizer: {meetup.User.name}</InfoText>
         </InfoWrapper>
-        <SubscribeButton onPress={() => subscribe(meetup.id)}>
+        <SubscribeButton loading={loading} onPress={handleSubscription}>
           Subscribe
         </SubscribeButton>
       </MeetupContent>
