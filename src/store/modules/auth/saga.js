@@ -20,12 +20,9 @@ export function* signIn({ payload }) {
       return;
     }
 
-    // add token to requests by default
     api.defaults.headers.Authorization = `Bearer ${token}`;
 
     yield put(signInSuccess(token, user));
-    // history.push('/dashboard');
-    Alert.alert('👏 Success', '');
   } catch (e) {
     yield put(signFailure());
 
@@ -45,7 +42,7 @@ export function* signUp({ payload }) {
       email,
       password,
     });
-    // history.push('/');
+
     Alert.alert(
       '👏 Success',
       `✅ ${name} your account was successfully created`

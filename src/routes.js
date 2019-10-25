@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from 'react-navigation-tabs';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import Dashboard from './pages/Dashboard';
+import Subscriptions from './pages/Subscriptions';
 
 export default (isSigned = false) =>
   createAppContainer(
@@ -16,13 +17,14 @@ export default (isSigned = false) =>
         App: createBottomTabNavigator(
           {
             Dashboard,
+            Subscriptions,
           },
           {
-            resetOnBlur: true,
+            lazy: false,
             tabBarOptions: {
               keyboardHidesTabBar: true,
               activeTintColor: '#fff',
-              inactiveTintColor: 'rgba(0,0,0,0.6)',
+              inactiveTintColor: 'rgba(255,255,255,0.3)',
               style: {
                 backgroundColor: '#2B1A2F',
                 borderTopColor: 'transparent',
