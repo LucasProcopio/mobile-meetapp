@@ -5,6 +5,7 @@ import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import Dashboard from './pages/Dashboard';
 import Subscriptions from './pages/Subscriptions';
+import Profile from './pages/Profile';
 
 export default (isSigned = false) =>
   createAppContainer(
@@ -18,6 +19,7 @@ export default (isSigned = false) =>
           {
             Dashboard,
             Subscriptions,
+            Profile,
           },
           {
             lazy: false,
