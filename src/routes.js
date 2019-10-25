@@ -20,7 +20,7 @@ export default (isSigned = false) =>
             Subscriptions,
           },
           {
-            resetOnBlur: true,
+            lazy: false,
             tabBarOptions: {
               keyboardHidesTabBar: true,
               activeTintColor: '#fff',

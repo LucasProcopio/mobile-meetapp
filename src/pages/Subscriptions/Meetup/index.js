@@ -13,12 +13,12 @@ import {
   SubscribeButton,
 } from './styles';
 
-export default function Meetup({ data: meetup, subscribe }) {
+export default function Meetup({ data: meetup, cancelSubscription }) {
   const [loading, setLoading] = useState(false);
 
   async function handleSubscription() {
     setLoading(true);
-    await subscribe(meetup.id);
+    await cancelSubscription(meetup.subscription[0]);
     setLoading(false);
   }
 
@@ -40,7 +40,7 @@ export default function Meetup({ data: meetup, subscribe }) {
           <InfoText>Organizer: {meetup.User.name}</InfoText>
         </InfoWrapper>
         <SubscribeButton loading={loading} onPress={handleSubscription}>
-          Subscribe
+          Cancel subscription
         </SubscribeButton>
       </MeetupContent>
     </MeetupWrapper>
@@ -58,5 +58,5 @@ Meetup.propTypes = {
       name: PropTypes.string.isRequired,
     }),
   }).isRequired,
-  subscribe: PropTypes.func.isRequired,
+  cancelSubscription: PropTypes.func.isRequired,
 };
