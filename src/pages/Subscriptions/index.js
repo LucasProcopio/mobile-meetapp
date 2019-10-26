@@ -17,6 +17,9 @@ function Subscriptions({ isFocused }) {
   const [loader, setLoader] = useState(false);
   const [refreshList, setRefreshList] = useState(false);
 
+  /**
+   * Get user subscribbed meetups
+   */
   async function getSubscribbedMeetups() {
     try {
       setLoader(true);
@@ -47,6 +50,9 @@ function Subscriptions({ isFocused }) {
     }
   }, [isFocused, refreshList]);
 
+  /**
+   * Cancel user meetups subscription
+   */
   async function handleCancelSubcription(subscription) {
     const { id } = subscription;
 
