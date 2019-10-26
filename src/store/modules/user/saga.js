@@ -16,14 +16,17 @@ export function* updateProfile({ payload }) {
 
     const response = yield call(api.put, 'users', profile);
 
-    Alert.alert('Success', 'Profile successfully updated!');
+    Alert.alert(
+      '👏 Success',
+      `✅ ${name} your profile has been successfully updated!`
+    );
 
     yield put(updateProfileSuccess(response.data));
   } catch (error) {
     yield put(updateProfileFailure());
     Alert.alert(
-      'Update failed',
-      'Error while trying to update the data, please try it again'
+      '❌ Update failed',
+      '💩 Error while trying to update the data, please try it again'
     );
   }
 }

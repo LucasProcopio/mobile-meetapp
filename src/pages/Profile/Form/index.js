@@ -14,7 +14,6 @@ import {
 } from './styles';
 
 const Form = props => {
-  console.tron.log(props);
   const {
     errors,
     handleLogout,
@@ -23,9 +22,8 @@ const Form = props => {
     values,
     loading,
   } = props;
-
-  const { name, email, oldPassword, newPassword, confirmPassword } = values;
-  console.tron.log(props);
+  const { name, email, oldPassword, password, confirmPassword } = values;
+  console.tron.log(loading);
   return (
     <FormWrapper>
       <FormInput
@@ -71,11 +69,11 @@ const Form = props => {
         secureTextEntry
         placeholder="New password"
         returnKeyType="send"
-        value={newPassword}
-        onChangeText={text => setFieldValue('newPassword', text)}
+        value={password}
+        onChangeText={text => setFieldValue('password', text)}
       />
 
-      {errors.newPassword && <ErrorText>{errors.newPassword}</ErrorText>}
+      {errors.password && <ErrorText>{errors.password}</ErrorText>}
 
       <FormInput
         icon="lock-outline"
@@ -94,9 +92,7 @@ const Form = props => {
         Save profile
       </SubmitButton>
 
-      <LogoutButton loading={loading} onPress={handleLogout}>
-        Logout
-      </LogoutButton>
+      <LogoutButton onPress={handleLogout}>Logout</LogoutButton>
     </FormWrapper>
   );
 };
@@ -104,13 +100,13 @@ const Form = props => {
 export default withFormik({
   validateOnChange: false,
   mapPropsToValues: props => {
-    const { name, email, oldPassword, newPassword, confirmPassword } = props;
+    const { name, email } = props;
     return {
       name,
       email,
-      oldPassword,
-      newPassword,
-      confirmPassword,
+      oldPassword: '',
+      password: '',
+      confirmPassword: '',
     };
   },
 
@@ -120,24 +116,25 @@ export default withFormik({
       .email('E-mail is not valid')
       .required('Your e-mail is required'),
     oldPassword: Yup.string(),
-    newPassword: Yup.string().when('oldPassword', (value, field) =>
+    password: Yup.string().when('oldPassword', (value, field) =>
       value
         ? field
             .required('The New password is required')
             .min(8, 'The new password must be at least 8 characters')
         : field
     ),
-    confirmPassword: Yup.string().when('newPassword', (value, field) =>
+    confirmPassword: Yup.string().when('password', (value, field) =>
       value
         ? field
             .required('Please confirm your password')
-            .oneOf([Yup.ref('newPassword'), null], 'Password does not match')
+            .oneOf([Yup.ref('password'), null], 'Password does not match')
         : field
     ),
   }),
 
-  handleSubmit: values => {
-    console.tron.log('values', values);
+  handleSubmit: (values, formkBag) => {
+    const { handleUpdate } = formkBag.props;
+    handleUpdate(values);
   },
 })(Form);
 
@@ -146,7 +143,7 @@ Form.propTypes = {
     name: PropTypes.string,
     email: PropTypes.string,
     oldPassword: PropTypes.string,
-    newPassword: PropTypes.string,
+    password: PropTypes.string,
     confirmPassword: PropTypes.string,
   }),
   handleLogout: PropTypes.func.isRequired,
@@ -157,7 +154,7 @@ Form.propTypes = {
     name: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
     oldPassword: PropTypes.string.isRequired,
-    newPassword: PropTypes.string.isRequired,
+    password: PropTypes.string.isRequired,
     confirmPassword: PropTypes.string.isRequired,
   }).isRequired,
 };

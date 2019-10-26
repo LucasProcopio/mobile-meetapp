@@ -16,7 +16,8 @@ export function* signIn({ payload }) {
     const { token, user } = response.data;
 
     if (user.provider) {
-      Alert.alert('Login error', '💩 User cannot be a provider 💩');
+      Alert.alert('Login error', '💩 User cannot be a provider');
+      yield put(signFailure());
       return;
     }
 
@@ -27,8 +28,8 @@ export function* signIn({ payload }) {
     yield put(signFailure());
 
     const message = e.response
-      ? `❌ ${e.response.data.error} ❌`
-      : '💩 An internal error ocurred while trying to login, please try again later 💩';
+      ? `❌ ${e.response.data.error}`
+      : '💩 An internal error ocurred while trying to login, please try again later';
 
     Alert.alert('Authentication failed', message);
   }
@@ -49,8 +50,8 @@ export function* signUp({ payload }) {
     );
   } catch (e) {
     const message = e.response
-      ? `❌ ${e.response.data.error} ❌`
-      : '💩 An internal error ocurred while trying to subscribe, please try again later 💩';
+      ? `❌ ${e.response.data.error}`
+      : '💩 An internal error ocurred while trying to subscribe, please try again later';
 
     Alert.alert('Subscription error', message);
 
