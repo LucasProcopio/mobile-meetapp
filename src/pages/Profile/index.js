@@ -2,18 +2,20 @@ import React, { useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import * as Yup from 'yup';
+
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import { signOut } from '~/store/modules/auth/actions';
 import Header from '~/components/Header';
+import Form from './Form';
+
 import {
   Container,
-  Form,
-  FormInput,
-  SubmitButton,
-  LogoutButton,
-  Separator,
+  // FormInput,
+  // SubmitButton,
+  // LogoutButton,
+  // Separator,
 } from './styles';
 
 export default function Profile() {
@@ -29,50 +31,24 @@ export default function Profile() {
 
   const [loading, setLoading] = useState(false);
 
-  const oldPasswordRef = useRef();
-  const newPasswordRef = useRef();
-  const confirmPasswordRef = useRef();
-  const emailRef = useRef();
-
-  const schema = Yup.object().shape({
-    name: Yup.string().required('Your name is required!'),
-    email: Yup.string()
-      .email('E-mail is not valid')
-      .required('Your e-mail is required'),
-    oldPassword: Yup.string(),
-    newPassword: Yup.string().when('oldPassword', (oldPass, field) =>
-      oldPass ? field.required().min(8) : field
-    ),
-    // confirmPassword: Yup.string().when('newPassword', {
-    //   is: true,
-    //   then: Yup.string().oneOf(
-    //     [Yup.ref('newPassword'), null],
-    //     'Password does not match'
-    //   ),
-    //   otherwise: Yup.string().notRequired(),
-    // }),
-  });
-
-  async function handleSubmit() {
-    const validation = await schema.validate({
-      name,
-      email,
-      oldPassword,
-      newPassword,
-      confirmPassword,
-    });
-    console.tron.log(validation);
-  }
-
   function handleLogout() {
     dispatch(signOut());
   }
 
+  const formProps = {
+    name,
+    email,
+    oldPassword,
+    newPassword,
+    confirmPassword,
+    loading,
+    handleLogout,
+  };
   return (
     <Header>
       <Container>
-        <Form>
-          <FormInput
+        <Form {...formProps} />
+        {/* <FormInput
             icon="person-outline"
             autoCorrect={false}
             autoCapitalize="none"
@@ -138,7 +114,7 @@ export default function Profile() {
           <LogoutButton loading={loading} onPress={handleLogout}>
             Logout
           </LogoutButton>
-        </Form>
+        </Form> */}
       </Container>
     </Header>
   );
