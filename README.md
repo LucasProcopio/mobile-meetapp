@@ -37,7 +37,7 @@ yarn
 
 ## Usage
 
-- make sure you have an android deveice up and running `adb devices`
+- make sure you have an android deveice up and running, run `adb devices` on a terminal to see the connected devices on your OS
 
 - At the root folder of this application on a terminal or windowns cmd run the command below
 
