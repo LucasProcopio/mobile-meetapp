@@ -52,6 +52,7 @@ export default function SignUp({ navigation }) {
           autoCorrect={false}
           autoCapitalize="none"
           placeholder="Type your e-mail"
+          ref={emailRef}
           returnKeyType="next"
           onSubmitEditing={() => passwordRef.current.focus()}
           value={email}

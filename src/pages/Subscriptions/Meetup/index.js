@@ -18,6 +18,7 @@ export default function Meetup({ data: meetup, cancelSubscription }) {
 
   async function handleSubscription() {
     setLoading(true);
+    console.tron.log(meetup);
     await cancelSubscription(meetup.subscription[0]);
     setLoading(false);
   }
