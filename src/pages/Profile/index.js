@@ -19,10 +19,16 @@ export default function Profile() {
 
   const { name, email } = profile;
 
+  /**
+   * Updates user profile
+   */
   function handleUpdate(data) {
     dispatch(updateProfileRequest(data));
   }
 
+  /**
+   * User logout
+   */
   function handleLogout() {
     dispatch(signOut());
   }
