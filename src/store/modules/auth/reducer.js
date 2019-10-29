@@ -9,6 +9,7 @@ const INITIAL_STATE = {
 export default function auth(state = INITIAL_STATE, action) {
   return produce(state, draftState => {
     switch (action.type) {
+      case '@auth/SIGN_UP_REQUEST':
       case '@auth/SIGN_IN_REQUEST': {
         draftState.loading = true;
         break;
@@ -16,6 +17,10 @@ export default function auth(state = INITIAL_STATE, action) {
       case '@auth/SIGN_IN_SUCCESS': {
         draftState.signed = true;
         draftState.token = action.payload.token;
+        draftState.loading = false;
+        break;
+      }
+      case '@auth/SIGN_UP_SUCCESS': {
         draftState.loading = false;
         break;
       }

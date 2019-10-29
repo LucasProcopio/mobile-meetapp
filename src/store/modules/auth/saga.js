@@ -2,7 +2,7 @@ import { all, call, put, takeLatest } from 'redux-saga/effects';
 import { Alert } from 'react-native';
 
 import api from '~/services/api';
-import { signInSuccess, signFailure } from './actions';
+import { signInSuccess, signFailure, signUpSuccess } from './actions';
 
 export function* signIn({ payload }) {
   try {
@@ -44,6 +44,7 @@ export function* signUp({ payload }) {
       password,
     });
 
+    yield put(signUpSuccess());
     Alert.alert(
       '👏 Success',
       `✅ ${name} your account was successfully created`
