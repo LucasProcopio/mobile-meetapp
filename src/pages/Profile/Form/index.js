@@ -149,7 +149,7 @@ Form.propTypes = {
   handleLogout: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   setFieldValue: PropTypes.func.isRequired,
-  loading: PropTypes.bool.isRequired,
+  loading: PropTypes.bool,
   values: PropTypes.shape({
     name: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
@@ -161,4 +161,5 @@ Form.propTypes = {
 
 Form.defaultProps = {
   errors: PropTypes.object,
+  loading: PropTypes.bool,
 };
