@@ -35,6 +35,8 @@ yarn
 
 - to run this application follow [this instructions](https://facebook.github.io/react-native/docs/getting-started), make sure you select the tab **React Native CLI Quickstart** and set the target OS: **android**
 
+- NOTE: add the correct IP address and port values to the api config file located at `src/services/api.js` you should set the value for the **baseURL** variable, so the app can retrieve the api data correctly.
+
 ## Usage
 
 - make sure you have an android deveice up and running, run `adb devices` on a terminal to see the connected devices on your OS
